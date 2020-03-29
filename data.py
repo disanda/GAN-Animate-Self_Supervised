@@ -1,17 +1,20 @@
+# coding=utf-8
 import os
 from PIL import Image
 from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, transforms
 
 class DatasetFromFolder(Dataset):
-    def __init__(self):
-        super().__init__(path='/_yucheng/dataSet/pose_set_1',size=32)
-        #self.image_filenames = [x for x in os.listdir(self.path) if x.endswith('jpg') or x.endswith('png')] # x.startswith() 
-        imgs_path = os.listdir(path)
-        self.image = list(filter(lambda x:x.endswith('jpg') or x.endswith('png') ,imgs_path))
+    def __init__(self,path='',size=32):
+        super().__init__()
+        self.path = path
+        self.size = size
+        self.image_filenames = [x for x in os.listdir(self.path) if x.endswith('jpg') or x.endswith('png')] # x.startswith() 
+        #imgs_path = os.listdir(path)
+        #self.image_filenames = list(filter(lambda x:x.endswith('jpg') or x.endswith('png') ,imgs_path))
     def __getitem__(self, index):
-        a = Image.open(os.path.join(path, self.image_filenames[index])).convert('L')
-        a = a.resize((size, size), Image.BICUBIC)
+        a = Image.open(os.path.join(self.path, self.image_filenames[index])).convert('L')
+        a = a.resize((self.size, self.size), Image.BICUBIC)
         a = transforms.ToTensor()(a)
         return a
     def __len__(self):
@@ -67,9 +70,9 @@ def make_dataset(dataset_name, batch_size, drop_remainder=True, shuffle=True, nu
 # =                                   debug                                    =
 # ==============================================================================
 
-# pose = DatasetFromFolder()
+# pose = DatasetFromFolder('/Users/apple/Desktop/AI_code/dataSet/pose_set_1000')
 
-# train_loader = torch.utils.data.DataLoader(
+# train_loader = DataLoader(
 #      dataset=pose,
 #      batch_size=25,#一个batch25张图片,epoch=allData_size/batch_size
 #      shuffle=False,
@@ -77,6 +80,10 @@ def make_dataset(dataset_name, batch_size, drop_remainder=True, shuffle=True, nu
 #      pin_memory=True,#用Nvidia GPU时生效
 #      drop_last=True
 #  )
+
+# import tqdm
+# for x_real in tqdm.tqdm(train_loader, desc='Inner Epoch Loop'):
+#     print(type(x_real))
 
 # for i, x in enumerate(train_loader):
 #      print(i)

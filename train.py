@@ -152,9 +152,9 @@ def sample(z):
 # ==============================================================================
 
 # load checkpoint if exists
-ckpt_dir = py.join(output_dir, 'checkpoints')
-if not os.path.exists(list_path):
-    py.mkdir(ckpt_dir)
+ckpt_dir = os.path.join(output_dir, 'checkpoints')
+if not os.path.exists(ckpt_dir):
+    os.mkdir(ckpt_dir)
 try:
     ckpt_path = os.path.join(ckpt_dir, 'xxx.ckpt')
     torch.load(ckpt_path)
@@ -167,11 +167,12 @@ except:
     ep, it_d, it_g = 0, 0, 0
 
 # sample
-sample_dir = py.join(output_dir, 'samples_training')
-py.mkdir(sample_dir)
+sample_dir = os.path.join(output_dir, 'samples_training')
+if not os.path.exists(sample_dir):
+    os.mkdir(sample_dir)
 
 # main loop
-writer = tensorboardX.SummaryWriter(py.join(output_dir, 'summaries'))
+writer = tensorboardX.SummaryWriter(os.path.join(output_dir, 'summaries'))
 z = torch.randn(100, args.z_dim, 1, 1).to(device)  # a fixed noise for sampling
 
 for ep_ in tqdm.trange(args.epochs):#epoch:n*batch
@@ -200,5 +201,5 @@ for ep_ in tqdm.trange(args.epochs):#epoch:n*batch
                               'G': G.state_dict(),
                               'D_optimizer': D_optimizer.state_dict(),
                               'G_optimizer': G_optimizer.state_dict()},
-                              py.join(ckpt_dir, 'Epoch_(%d).ckpt' % ep)
+                              os.path.join(ckpt_dir, 'Epoch_(%d).ckpt' % ep)
                               )

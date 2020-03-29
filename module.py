@@ -35,7 +35,7 @@ class ConvGenerator(nn.Module):
 
         def dconv_norm_relu(in_dim, out_dim, kernel_size=4, stride=2, padding=1):
             return nn.Sequential(
-                nn.ConvTranspose2d(in_dim, out_dim, kernel_size, stride=stride, padding=padding, bias=False or Norm == torchlib.Identity),
+                nn.ConvTranspose2d(in_dim, out_dim, kernel_size, stride=stride, padding=padding, bias=False or Norm == Identity),
                 Norm(out_dim),
                 nn.ReLU()
             )
@@ -75,7 +75,7 @@ class ConvDiscriminator(nn.Module):
 
         def conv_norm_lrelu(in_dim, out_dim, kernel_size=4, stride=2, padding=1):
             return nn.Sequential(
-                nn.Conv2d(in_dim, out_dim, kernel_size, stride=stride, padding=padding, bias=False or Norm == torchlib.Identity),
+                nn.Conv2d(in_dim, out_dim, kernel_size, stride=stride, padding=padding, bias=False or Norm == Identity),
                 Norm(out_dim),
                 nn.LeakyReLU(0.2)
             )
