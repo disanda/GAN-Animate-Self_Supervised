@@ -1,13 +1,15 @@
 import functools
-
-import torchlib
-
 from torch import nn
 
+class Identity(torch.nn.Module):
+    def __init__(self, *args, **keyword_args):
+        super().__init__()
+    def forward(self, x):
+        return x
 
 def _get_norm_layer_2d(norm):
     if norm == 'none':
-        return torchlib.Identity
+        return Identity
     elif norm == 'batch_norm':
         return nn.BatchNorm2d
     elif norm == 'instance_norm':
