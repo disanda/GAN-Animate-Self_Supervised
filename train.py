@@ -12,36 +12,46 @@ import data
 import module
 
 
+import os
+
 # ==============================================================================
 # =                                   param                                    =
 # ==============================================================================
 
-# command line
-py.arg('--dataset_name', default='fashion_mnist', choices=['cifar10', 'fashion_mnist', 'mnist', 'celeba', 'pose'])
-py.arg('--batch_size', type=int, default=64)
-py.arg('--epochs', type=int, default=20)
-py.arg('--lr', type=float, default=0.0002)
-py.arg('--beta_1', type=float, default=0.5)
-py.arg('--n_d', type=int, default=1)  # # d updates per g update
-py.arg('--z_dim', type=int, default=128)
-py.arg('--adversarial_loss_mode', default='gan', choices=['gan', 'hinge_v1', 'hinge_v2', 'lsgan', 'wgan'])
-py.arg('--gradient_penalty_mode', default='none', choices=['none', '1-gp', '0-gp', 'lp'])
-py.arg('--gradient_penalty_sample_mode', default='line', choices=['line', 'real', 'fake', 'dragan'])
-py.arg('--gradient_penalty_weight', type=float, default=10.0)
-py.arg('--experiment_name', default='none')
-py.arg('--gradient_penalty_d_norm', default='layer_norm', choices=['instance_norm', 'layer_norm'])  # !!!
-args = py.args()
+import argparse
+parser = argparse.ArgumentParser(description='the training args')
+parser.add_argument('--dataset_name',default='pose')#choices=['cifar10', 'fashion_mnist', 'mnist', 'celeba', 'pose']
+parser.add_argument('--batch_size',type=int,default=64)
+parser.add_argument('--epochs', type=int, default=20)
+parser.add_argument('--lr', type=float, default=0.0002,help='learning_rate')
+parser.add_argument('--beta_1', type=float, default=0.5)
+parser.add_argument('--n_d', type=int, default=1)# d updates per g update
+parser.add_argument('--z_dim', type=int, default=128)
+parser.add_argument('--adversarial_loss_mode', default='gan', choices=['gan', 'hinge_v1', 'hinge_v2', 'lsgan', 'wgan'])
+parser.add_argument('--gradient_penalty_mode', default='none', choices=['none', '1-gp', '0-gp', 'lp'])
+parser.add_argument('--gradient_penalty_sample_mode', default='line', choices=['line', 'real', 'fake', 'dragan'])
+parser.add_argument('--gradient_penalty_weight', type=float, default=10.0)
+parser.add_argument('--experiment_name', default='none')
+parser.add_argument('--gradient_penalty_d_norm', default='layer_norm', choices=['instance_norm', 'layer_norm'])
+args = parser.parse_args()
 
 # output_dir
 if args.experiment_name == 'none':
-    args.experiment_name = '%s_%s' % (args.dataset, args.adversarial_loss_mode)
-    if args.gradient_penalty_mode != 'none':
-        args.experiment_name += '_%s_%s' % (args.gradient_penalty_mode, args.gradient_penalty_sample_mode)
-output_dir = py.join('output', args.experiment_name)
-py.mkdir(output_dir)
+    args.experiment_name = '%s_%s' % (args.dataset_name, args.adversarial_loss_mode)
+    if gradient_penalty_mode != 'none':
+        experiment_name += '_%s_%s' % (args.gradient_penalty_mode, args.gradient_penalty_sample_mode)
+output_dir = os.path.join('output', args.experiment_name)
+
+if not os.path.exists('output'):
+    os.mkdir('output')
+if not os.path.exists(output_dir):
+    os.mkdir(output_dir)
+#os.mkdirs(output_dir)
 
 # save settings
-py.args_to_yaml(py.join(output_dir, 'settings.yml'), args)
+import yaml
+with open(os.path.join(output_dir, 'settings.yml'), "w", encoding="utf-8") as f:
+    yaml.dump(args, f)
 
 # others
 use_gpu = torch.cuda.is_available()

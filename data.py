@@ -36,15 +36,15 @@ def make_dataset(dataset_name, batch_size, drop_remainder=True, shuffle=True, nu
         ])
         dataset = datasets.CIFAR10('data/CIFAR10', transform=transform, download=True)
         img_shape = [32, 32, 3]
-    elif dataset == 'pose'：
+    elif dataset == 'pose':
             transform = transforms.Compose([
             transforms.Resize(size=(32, 32)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5], std=[0.5])
         ])
-        dataset = DatasetFromFolder(path='')
-        img_shape = [32, 32, 1]
-    elif dataset == 'celeba_64'
+            dataset = DatasetFromFolder(path='/_yucheng/dataSet/pose_set_1')
+            img_shape = [32, 32, 1]
+    elif dataset == 'celeba_64':
         crop_size = 108
         offset_height = (218 - crop_size) // 2
         offset_width = (178 - crop_size) // 2

@@ -1,4 +1,5 @@
 import functools
+import torch
 from torch import nn
 
 class Identity(torch.nn.Module):
