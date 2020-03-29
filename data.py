@@ -18,25 +18,25 @@ class DatasetFromFolder(Dataset):
         return len(self.image_filenames)
 
 def make_dataset(dataset_name, batch_size, drop_remainder=True, shuffle=True, num_workers=4, pin_memory=False,img_paths=''):
-    if dataset == 'mnist' or 'fashion_mnist':
+    if dataset_name == 'mnist' or 'fashion_mnist':
         transform = transforms.Compose([
             transforms.Resize(size=(32, 32)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5], std=[0.5])
         ])
-        if dataset == 'mnist':
+        if dataset_name == 'mnist':
             dataset = datasets.MNIST('data/MNIST', transform=transform, download=True)
         else:
             dataset = datasets.FashionMNIST('data/FashionMNIST', transform=transform, download=True)
         img_shape = [32, 32, 1]
-    elif dataset == 'cifar10':
+    elif dataset_name == 'cifar10':
         transform = transforms.Compose([
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
         dataset = datasets.CIFAR10('data/CIFAR10', transform=transform, download=True)
         img_shape = [32, 32, 3]
-    elif dataset == 'pose':
+    elif dataset_name == 'pose':
             transform = transforms.Compose([
             transforms.Resize(size=(32, 32)),
             transforms.ToTensor(),
@@ -44,7 +44,7 @@ def make_dataset(dataset_name, batch_size, drop_remainder=True, shuffle=True, nu
         ])
             dataset = DatasetFromFolder(path='/_yucheng/dataSet/pose_set_1')
             img_shape = [32, 32, 1]
-    elif dataset == 'celeba_64':
+    elif dataset_name == 'celeba_64':
         crop_size = 108
         offset_height = (218 - crop_size) // 2
         offset_width = (178 - crop_size) // 2

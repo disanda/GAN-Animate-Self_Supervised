@@ -38,7 +38,7 @@ args = parser.parse_args()
 # output_dir
 if args.experiment_name == 'none':
     args.experiment_name = '%s_%s' % (args.dataset_name, args.adversarial_loss_mode)
-    if gradient_penalty_mode != 'none':
+    if args.gradient_penalty_mode != 'none':
         experiment_name += '_%s_%s' % (args.gradient_penalty_mode, args.gradient_penalty_sample_mode)
 output_dir = os.path.join('output', args.experiment_name)
 
@@ -62,15 +62,15 @@ device = torch.device("cuda" if use_gpu else "cpu")
 # ==============================================================================
 
 # setup dataset
-if args.dataset in ['cifar10', 'fashion_mnist', 'mnist']:  # 32x32
+if args.dataset_name in ['cifar10', 'fashion_mnist', 'mnist']:  # 32x32
     data_loader, shape = data.make_dataset(args.dataset_name, args.batch_size, pin_memory=use_gpu)
     n_G_upsamplings = n_D_downsamplings = 3
 
-elif args.dataset == 'celeba':  # 64x64
+elif args.dataset_name == 'celeba':  # 64x64
     data_loader, shape = data.make_dataset(args.dataset_name, args.batch_size, pin_memory=use_gpu)
     n_G_upsamplings = n_D_downsamplings = 4
 
-elif args.dataset == 'pose':  # 32x32
+elif args.dataset_name == 'pose':  # 32x32
     #img_paths = os.listdir('data/pose')
     #img_payhs = list(filter(lambda x:x.endswith('png'),img_paths))
     data_loader, shape = data.make_dataset(args.dataset_name,args.batch_size, pin_memory=use_gpu)
