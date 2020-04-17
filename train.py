@@ -178,9 +178,14 @@ def sample(z):
 for ep_ in tqdm.trange(args.epochs):#epoch:n*batch
     ep = ep+1
     for x_real in tqdm.tqdm(data_loader, desc='Inner Epoch Loop'):#batch_size
-        x_real = x_real.to(device)
+        if dataset_name == 'cifar10':#数据有标签
+            images,labels = x_real
+            images = images.to(device)
+        else:
+            images = x_real
+            images = images.to(device)
 
-        D_loss_dict = train_D(x_real)
+        D_loss_dict = train_D(images)
         it_d += 1
         for k, v in D_loss_dict.items():
             writer.add_scalar('D/%s' % k, v.data.cpu().numpy(), global_step=it_d)
