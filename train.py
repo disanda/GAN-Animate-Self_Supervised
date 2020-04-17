@@ -178,7 +178,7 @@ def sample(z):
 for ep_ in tqdm.trange(args.epochs):#epoch:n*batch
     ep = ep+1
     for x_real in tqdm.tqdm(data_loader, desc='Inner Epoch Loop'):#batch_size
-        if dataset_name == 'cifar10':#数据有标签
+        if args.dataset_name == 'cifar10':#数据有标签
             images,labels = x_real
             images = images.to(device)
         else:
