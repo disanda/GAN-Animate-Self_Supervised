@@ -43,7 +43,7 @@ class ConvGenerator(nn.Module):
         layers = []
 
         # 1: 1x1 -> 4x4
-        d = min(dim * 2 ** (n_upsamplings - 1), dim * 8)#64*2**3,64*8
+        d = min(dim * 2 ** (n_upsamplings - 1), dim * 8)#64*2**3,64*8=512
         layers.append(dconv_norm_relu(input_dim, d, kernel_size=4, stride=1, padding=0))
 
         # 2: upsamplings, 4x4 -> 8x8 -> 16x16 -> ...

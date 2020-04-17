@@ -6,15 +6,15 @@ import torch
 # ======================================
 
 def _sample_line(real, fake):
-    shape = [real.size(0)] + [1] * (real.dim() - 1)
+    shape = [real.size(0)] + [1] * (real.dim() - 1)#real.size(0),real第一维的个数/[1]*3 = [1,1,1] / real.dim()：real坐标数 如[1,1,1,1] dim为4
     alpha = torch.rand(shape, device=real.device)
     sample = real + alpha * (fake - real)
     return sample
 
 
 def _sample_DRAGAN(real, fake):  # fake is useless
-    beta = torch.rand_like(real)
-    fake = real + 0.5 * real.std() * beta
+    beta = torch.rand_like(real)#维度和real一样的随机矩阵,值为(0,1)
+    fake = real + 0.5 * real.std() * beta #fake只和real有关
     sample = _sample_line(real, fake)
     return sample
 
@@ -53,13 +53,11 @@ def gradient_penalty(f, real, fake, gp_mode, sample_mode):
         'fake': lambda real, fake: fake,
         'dragan': _sample_DRAGAN,
     }
-
     gp_fns = {
         '1-gp': _one_mean_gp,
         '0-gp': _zero_mean_gp,
         'lp': _lipschitz_penalty,
     }
-
     if gp_mode == 'none':
         gp = torch.tensor(0, dtype=real.dtype, device=real.device)
     else:

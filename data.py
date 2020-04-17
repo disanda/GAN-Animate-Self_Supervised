@@ -20,8 +20,8 @@ class DatasetFromFolder(Dataset):
     def __len__(self):
         return len(self.image_filenames)
 
-def make_dataset(dataset_name, batch_size, drop_remainder=True, shuffle=True, num_workers=4, pin_memory=False,img_paths=''):
-    if dataset_name == 'mnist' or 'fashion_mnist':
+def make_dataset(dataset_name, batch_size,img_size,drop_remainder=True, shuffle=True, num_workers=4, pin_memory=False,img_paths=''):
+    if dataset_name == 'mnist' or dataset_name=='fashion_mnist':
         transform = transforms.Compose([
             transforms.Resize(size=(32, 32)),
             transforms.ToTensor(),
@@ -41,12 +41,12 @@ def make_dataset(dataset_name, batch_size, drop_remainder=True, shuffle=True, nu
         img_shape = [32, 32, 3]
     elif dataset_name == 'pose':
             transform = transforms.Compose([
-            transforms.Resize(size=(32, 32)),
+            transforms.Resize(size=(img_size, img_size)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5], std=[0.5])
         ])
-            dataset = DatasetFromFolder(path='/_yucheng/dataSet/pose_set_1')
-            img_shape = [32, 32, 1]
+            dataset = DatasetFromFolder(path='./dataSet/pose_set_249',img_size)
+            img_shape = [img_size, img_size, 1]
     elif dataset_name == 'celeba_64':
         crop_size = 108
         offset_height = (218 - crop_size) // 2
@@ -88,4 +88,4 @@ def make_dataset(dataset_name, batch_size, drop_remainder=True, shuffle=True, nu
 # for i, x in enumerate(train_loader):
 #      print(i)
 #      print(x.shape)#[n,c,w,h]
-# torchvision.utils.save_image(x, './pose-img/%d.jpg'%(i), nrow=5)
+#      torchvision.utils.save_image(x, './pose-img/%d.jpg'%(i), nrow=5)#这个保存是三通道的,需要改成1通道

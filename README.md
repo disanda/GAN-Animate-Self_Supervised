@@ -6,3 +6,7 @@
 
 cgan
 pcgan
+
+
+python train --dataset_name='cifar10' --experiment_name='cifar10_1' 
+

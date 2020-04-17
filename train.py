@@ -10,7 +10,7 @@ import tqdm
 
 import data
 import module
-
+import torchvision
 
 import os
 
@@ -21,8 +21,8 @@ import os
 import argparse
 parser = argparse.ArgumentParser(description='the training args')
 parser.add_argument('--dataset_name',default='pose')#choices=['cifar10', 'fashion_mnist', 'mnist', 'celeba', 'pose']
-parser.add_argument('--batch_size',type=int,default=64)
-parser.add_argument('--epochs', type=int, default=20)
+parser.add_argument('--batch_size',type=int,default=32)
+parser.add_argument('--epochs', type=int, default=100)
 parser.add_argument('--lr', type=float, default=0.0002,help='learning_rate')
 parser.add_argument('--beta_1', type=float, default=0.5)
 parser.add_argument('--n_d', type=int, default=1)# d updates per g update
@@ -33,11 +33,12 @@ parser.add_argument('--gradient_penalty_sample_mode', default='line', choices=['
 parser.add_argument('--gradient_penalty_weight', type=float, default=10.0)
 parser.add_argument('--experiment_name', default='none')
 parser.add_argument('--gradient_penalty_d_norm', default='layer_norm', choices=['instance_norm', 'layer_norm'])
+parser.add_argument('--img_size',type=int,default=32)
 args = parser.parse_args()
 
 # output_dir
 if args.experiment_name == 'none':
-    args.experiment_name = '%s_%s' % (args.dataset_name, args.adversarial_loss_mode)
+    args.experiment_name = '%s_%s_%_%s' % (args.dataset_name, args.adversarial_loss_mode,args.batch_size,args.epochs)
     if args.gradient_penalty_mode != 'none':
         experiment_name += '_%s_%s' % (args.gradient_penalty_mode, args.gradient_penalty_sample_mode)
 output_dir = os.path.join('output', args.experiment_name)
@@ -70,11 +71,11 @@ elif args.dataset_name == 'celeba':  # 64x64
     data_loader, shape = data.make_dataset(args.dataset_name, args.batch_size, pin_memory=use_gpu)
     n_G_upsamplings = n_D_downsamplings = 4
 
-elif args.dataset_name == 'pose':  # 32x32
+elif args.dataset_name.find('pose') != -1:  # 32x32
     #img_paths = os.listdir('data/pose')
     #img_payhs = list(filter(lambda x:x.endswith('png'),img_paths))
-    data_loader, shape = data.make_dataset(args.dataset_name,args.batch_size, pin_memory=use_gpu)
-    n_G_upsamplings = n_D_downsamplings = 3  # 3 for 32x32 and 4 for 64x64
+    data_loader, shape = data.make_dataset(args.dataset_name,args.batch_size,arg.img_size,pin_memory=use_gpu)
+    n_G_upsamplings = n_D_downsamplings = 4  # 3 for 32x32 and 4 for 64x64
 
 # ==============================================================================
 # =                                   model                                    =
@@ -131,21 +132,15 @@ def train_D(x_real):
     x_fake_d_logit = D(x_fake)
 
     x_real_d_loss, x_fake_d_loss = d_loss_fn(x_real_d_logit, x_fake_d_logit)
-    gp = gp.gradient_penalty(functools.partial(D), x_real, x_fake, gp_mode=args.gradient_penalty_mode, sample_mode=args.gradient_penalty_sample_mode)
+    gp_value = gp.gradient_penalty(functools.partial(D), x_real, x_fake, gp_mode=args.gradient_penalty_mode, sample_mode=args.gradient_penalty_sample_mode)
 
-    D_loss = (x_real_d_loss + x_fake_d_loss) + gp * args.gradient_penalty_weight
+    D_loss = (x_real_d_loss + x_fake_d_loss) + gp_value * args.gradient_penalty_weight
 
     D.zero_grad()
     D_loss.backward()
     D_optimizer.step()
 
-    return {'d_loss': x_real_d_loss + x_fake_d_loss, 'gp': gp}
-
-
-@torch.no_grad()
-def sample(z):
-    G.eval()
-    return G(z)
+    return {'d_loss': x_real_d_loss + x_fake_d_loss, 'gp': gp_value}
 
 # ==============================================================================
 # =                                    run                                     =
@@ -157,7 +152,7 @@ if not os.path.exists(ckpt_dir):
     os.mkdir(ckpt_dir)
 try:
     ckpt_path = os.path.join(ckpt_dir, 'xxx.ckpt')
-    torch.load(ckpt_path)
+    ckpt=torch.load(ckpt_path)
     ep, it_d, it_g = ckpt['ep'], ckpt['it_d'], ckpt['it_g']
     D.load_state_dict(ckpt['D'])
     G.load_state_dict(ckpt['G'])
@@ -175,7 +170,13 @@ if not os.path.exists(sample_dir):
 writer = tensorboardX.SummaryWriter(os.path.join(output_dir, 'summaries'))
 z = torch.randn(100, args.z_dim, 1, 1).to(device)  # a fixed noise for sampling
 
+@torch.no_grad()
+def sample(z):
+    G.eval()
+    return G(z)
+
 for ep_ in tqdm.trange(args.epochs):#epoch:n*batch
+    ep = ep+1
     for x_real in tqdm.tqdm(data_loader, desc='Inner Epoch Loop'):#batch_size
         x_real = x_real.to(device)
 
@@ -194,12 +195,13 @@ for ep_ in tqdm.trange(args.epochs):#epoch:n*batch
         if it_g % 100 == 0:
             x_fake = sample(z)
             #x_fake = np.transpose(x_fake.data.cpu().numpy(), (0, 2, 3, 1))#(n,w,h,c)
-            torchvision.utils.save_image(x, './pose-img/%d.jpg'%(i), nrow=10)
+            torchvision.utils.save_image(x_fake,sample_dir+'/%d.jpg'%(it_g), nrow=10)
     # save checkpoint
-    torch.save({'ep': ep, 'it_d': it_d, 'it_g': it_g,
+    if ep*10 == 0:
+        torch.save({'ep': ep, 'it_d': it_d, 'it_g': it_g,
                               'D': D.state_dict(),
                               'G': G.state_dict(),
                               'D_optimizer': D_optimizer.state_dict(),
                               'G_optimizer': G_optimizer.state_dict()},
-                              os.path.join(ckpt_dir, 'Epoch_(%d).ckpt' % ep)
+                              os.path.join(ckpt_dir, '/Epoch_(%d).ckpt' % ep)
                               )
