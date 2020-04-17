@@ -64,11 +64,11 @@ device = torch.device("cuda" if use_gpu else "cpu")
 
 # setup dataset
 if args.dataset_name in ['cifar10', 'fashion_mnist', 'mnist']:  # 32x32
-    data_loader, shape = data.make_dataset(args.dataset_name, args.batch_size,arg.img_size,pin_memory=use_gpu)
+    data_loader, shape = data.make_dataset(args.dataset_name, args.batch_size,args.img_size,pin_memory=use_gpu)
     n_G_upsamplings = n_D_downsamplings = 3
 
 elif args.dataset_name == 'celeba':  # 64x64
-    data_loader, shape = data.make_dataset(args.dataset_name, args.batch_size,arg.img_size,pin_memory=use_gpu)
+    data_loader, shape = data.make_dataset(args.dataset_name, args.batch_size,args.img_size,pin_memory=use_gpu)
     n_G_upsamplings = n_D_downsamplings = 4
 
 elif args.dataset_name.find('pose') != -1:  # 32x32
