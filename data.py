@@ -35,7 +35,7 @@ def make_dataset(dataset_name, batch_size,img_size,drop_remainder=True, shuffle=
     elif dataset_name == 'cifar10':
         transform = transforms.Compose([
             transforms.ToTensor(),
-            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+            #transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
         ])
         dataset = datasets.CIFAR10('data/CIFAR10', transform=transform, download=True)
         img_shape = [32, 32, 3]
