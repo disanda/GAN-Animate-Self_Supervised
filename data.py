@@ -40,13 +40,13 @@ def make_dataset(dataset_name, batch_size,img_size,drop_remainder=True, shuffle=
         dataset = datasets.CIFAR10('data/CIFAR10', transform=transform, download=True)
         img_shape = [32, 32, 3]
     elif dataset_name == 'pose':
-            transform = transforms.Compose([
+        transform = transforms.Compose([
             transforms.Resize(size=(img_size, img_size)),
             transforms.ToTensor(),
             transforms.Normalize(mean=[0.5], std=[0.5])
         ])
-            dataset = DatasetFromFolder(path='./dataSet/pose_set_249',img_size)
-            img_shape = [img_size, img_size, 1]
+        dataset = DatasetFromFolder(path='./dataSet/pose_set_249',img_size)
+        img_shape = [img_size, img_size, 1]
     elif dataset_name == 'celeba_64':
         crop_size = 108
         offset_height = (218 - crop_size) // 2
