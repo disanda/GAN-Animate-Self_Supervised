@@ -75,7 +75,7 @@ elif args.dataset_name.find('pose') != -1:  # 32x32
     #img_paths = os.listdir('data/pose')
     #img_payhs = list(filter(lambda x:x.endswith('png'),img_paths))
     data_loader, shape = data.make_dataset(args.dataset_name,args.batch_size,args.img_size,pin_memory=use_gpu)
-    n_G_upsamplings = n_D_downsamplings = 4  # 3 for 32x32 and 4 for 64x64
+    n_G_upsamplings = n_D_downsamplings = 3  # 3 for 32x32 and 4 for 64x64
 
 # ==============================================================================
 # =                                   model                                    =
