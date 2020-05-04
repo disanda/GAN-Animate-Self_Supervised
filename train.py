@@ -40,7 +40,7 @@ args = parser.parse_args()
 if args.experiment_name == 'none':
     args.experiment_name = '%s_%s_%s_%s' % (args.dataset_name, args.adversarial_loss_mode,args.batch_size,args.epochs)
     if args.gradient_penalty_mode != 'none':
-        experiment_name += '_%s_%s' % (args.gradient_penalty_mode, args.gradient_penalty_sample_mode)
+        args.experiment_name += '_%s_%s' % (args.gradient_penalty_mode, args.gradient_penalty_sample_mode)
 output_dir = os.path.join('output', args.experiment_name)
 
 if not os.path.exists('output'):

@@ -43,6 +43,6 @@ python train.py --dataset=pose10 --epoch=1000 --adversarial_loss_mode=wgan --gra
 python train.py --dataset=pose10 --epoch=2000 --adversarial_loss_mode=wgan --gradient_penalty_mode=1-gp --gradient_penalty_sample_mode=dragan --n_d=2
 #训练收敛比较慢，中间出现过崩溃，后期可以生成但比较模糊，介于模糊和崩溃之间
 
-python train.py --dataset=pose10 --epoch=2000 --adversarial_loss_mode=hinge_v1 --gradient_penalty_mode=1-gp --gradient_penalty_sample_mode=line
+python train.py --dataset_name=pose10 --epoch=2000 --adversarial_loss_mode=hinge_v1 --gradient_penalty_mode=1-gp --gradient_penalty_sample_mode=line
 
 python train.py --dataset=pose10 --epoch=2000 --adversarial_loss_mode=hinge_v1 --gradient_penalty_mode=1-gp --gradient_penalty_sample_mode=dragan
