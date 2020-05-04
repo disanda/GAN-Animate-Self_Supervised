@@ -45,4 +45,4 @@ python train.py --dataset=pose10 --epoch=2000 --adversarial_loss_mode=wgan --gra
 
 python train.py --dataset_name=pose10 --epoch=2000 --adversarial_loss_mode=hinge_v1 --gradient_penalty_mode=1-gp --gradient_penalty_sample_mode=line
 
-python train.py --dataset=pose10 --epoch=2000 --adversarial_loss_mode=hinge_v1 --gradient_penalty_mode=1-gp --gradient_penalty_sample_mode=dragan
+python train.py --dataset=pose10 --epoch=2000 --adversarial_loss_mode=hinge_v1 --gradient_penalty_mode=1-gp --gradient_penalty_sample_mode=dragan --bartch_size==1 
