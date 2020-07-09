@@ -7,20 +7,17 @@ import torch
 import loss
 import gradient_penalty as gp
 import tqdm
-
 import data
 import module
 import torchvision
-
 import os
 
 # ==============================================================================
 # =                                   param                                    =
 # ==============================================================================
-
 import argparse
 parser = argparse.ArgumentParser(description='the training args')
-parser.add_argument('--dataset_name',default='pose')#choices=['cifar10', 'fashion_mnist', 'mnist', 'celeba', 'pose']
+parser.add_argument('--dataset_name',default='mnist')#choices=['cifar10', 'fashion_mnist', 'mnist', 'celeba', 'pose']
 parser.add_argument('--batch_size',type=int,default=32)
 parser.add_argument('--epochs', type=int, default=100)
 parser.add_argument('--lr', type=float, default=0.0002,help='learning_rate')

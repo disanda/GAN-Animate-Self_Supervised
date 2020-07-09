@@ -66,5 +66,4 @@ def gradient_penalty(f, real, fake, gp_mode, sample_mode):
         pred = f(x)
         grad = torch.autograd.grad(pred, x, grad_outputs=torch.ones_like(pred), create_graph=True)[0]
         gp = gp_fns[gp_mode](grad)
-
     return gp
